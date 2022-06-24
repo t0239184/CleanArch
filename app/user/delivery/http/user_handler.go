@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 
+	"github.com/t0239184/CleanArch/app"
 	"github.com/t0239184/CleanArch/app/domain"
 )
 
@@ -36,6 +37,8 @@ func NewUserHandler(e *gin.Engine, userUsecase domain.IUserUsecase) {
 }
 
 func (u *UserHandler) FindById(c *gin.Context) {
+	request_id, _ := c.Get("request_id")
+	fmt.Println(request_id)
 	userId := c.Param("id")
 	id, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
@@ -51,10 +54,8 @@ func (u *UserHandler) FindById(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err)
 		if err == gorm.ErrRecordNotFound {
-			c.JSON(200, gin.H{
-				"status":  400,
-				"message": err.Error(),
-			})
+			e := app.ErrUserNotFound
+			c.JSON(200, app.ErrorResponse(e))
 			return
 		}
 		c.JSON(200, gin.H{

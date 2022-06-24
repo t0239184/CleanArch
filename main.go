@@ -9,6 +9,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
+	_middleware "github.com/t0239184/CleanArch/app/middleware"
 	_userDlivery "github.com/t0239184/CleanArch/app/user/delivery/http"
 	_userRepo "github.com/t0239184/CleanArch/app/user/repository"
 	_userUsecase "github.com/t0239184/CleanArch/app/user/usecase"
@@ -32,6 +33,7 @@ func init() {
 func main() {
 	r := gin.Default()
 	db := InitDatabase()
+	r.Use(_middleware.Bundary)
 	userRepo := _userRepo.NewUserRepository(db)
 	userUsecase := _userUsecase.NewUserUsecase(userRepo)
 	_userDlivery.NewUserHandler(r, userUsecase)
